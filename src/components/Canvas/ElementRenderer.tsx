@@ -1,0 +1,188 @@
+import React, { useRef, useCallback } from 'react';
+import {
+  Rect,
+  Circle,
+  Ellipse,
+  Arrow,
+  Line,
+  Text,
+} from 'react-konva';
+import type Konva from 'konva';
+import type {
+  CanvasElement,
+  ToolType,
+  RectangleElement,
+  CircleElement,
+  EllipseElement,
+  ArrowElement,
+  DrawElement,
+  EraserElement,
+  TextElement,
+} from '../../types/canvas';
+
+interface ElementRendererProps {
+  elements: CanvasElement[];
+  selectedIds: string[];
+  activeTool: ToolType;
+  onSelect: (id: string) => void;
+  onDragEnd: (id: string, x: number, y: number) => void;
+  onTextDblClick: (element: CanvasElement) => void;
+}
+
+export const ElementRenderer: React.FC<ElementRendererProps> = ({
+  elements,
+  selectedIds,
+  activeTool,
+  onSelect,
+  onDragEnd,
+  onTextDblClick,
+}) => {
+  // Store refs for all elements (used by Transformer)
+  const elementRefs = useRef<Map<string, Konva.Node>>(new Map());
+
+  const setRef = useCallback((id: string, node: Konva.Node | null) => {
+    if (node) {
+      elementRefs.current.set(id, node);
+    } else {
+      elementRefs.current.delete(id);
+    }
+  }, []);
+
+  const isDraggable = activeTool === 'select';
+
+  const renderElement = (element: CanvasElement) => {
+    const isSelected = selectedIds.includes(element.id);
+    const commonProps = {
+      key: element.id,
+      name: element.id,
+      draggable: isDraggable,
+      opacity: element.opacity,
+      rotation: element.rotation,
+      onClick: () => onSelect(element.id),
+      onTap: () => onSelect(element.id),
+      onDragEnd: (event: Konva.KonvaEventObject<DragEvent>) => {
+        onDragEnd(element.id, event.target.x(), event.target.y());
+      },
+      strokeScaleEnabled: false,
+      shadowForStrokeEnabled: false,
+      hitStrokeWidth: isSelected ? 0 : 20,
+    };
+
+    switch (element.type) {
+      case 'rectangle': {
+        const rect = element as RectangleElement;
+        return (
+          <Rect
+            {...commonProps}
+            ref={(node) => setRef(element.id, node)}
+            x={rect.x}
+            y={rect.y}
+            width={rect.width}
+            height={rect.height}
+            fill={rect.fill}
+            stroke={rect.stroke}
+            strokeWidth={rect.strokeWidth}
+            cornerRadius={rect.cornerRadius}
+          />
+        );
+      }
+
+      case 'circle': {
+        const circle = element as CircleElement;
+        return (
+          <Circle
+            {...commonProps}
+            ref={(node) => setRef(element.id, node)}
+            x={circle.x}
+            y={circle.y}
+            radius={circle.radius}
+            fill={circle.fill}
+            stroke={circle.stroke}
+            strokeWidth={circle.strokeWidth}
+          />
+        );
+      }
+
+      case 'ellipse': {
+        const ellipse = element as EllipseElement;
+        return (
+          <Ellipse
+            {...commonProps}
+            ref={(node) => setRef(element.id, node)}
+            x={ellipse.x}
+            y={ellipse.y}
+            radiusX={ellipse.radiusX}
+            radiusY={ellipse.radiusY}
+            fill={ellipse.fill}
+            stroke={ellipse.stroke}
+            strokeWidth={ellipse.strokeWidth}
+          />
+        );
+      }
+
+      case 'arrow': {
+        const arrow = element as ArrowElement;
+        return (
+          <Arrow
+            {...commonProps}
+            ref={(node) => setRef(element.id, node)}
+            x={arrow.x}
+            y={arrow.y}
+            points={arrow.points}
+            fill={arrow.fill}
+            stroke={arrow.stroke}
+            strokeWidth={arrow.strokeWidth}
+            pointerLength={10 + arrow.strokeWidth * 2}
+            pointerWidth={10 + arrow.strokeWidth * 2}
+          />
+        );
+      }
+
+      case 'draw':
+      case 'eraser': {
+        const line = element as DrawElement | EraserElement;
+        return (
+          <Line
+            {...commonProps}
+            ref={(node) => setRef(element.id, node)}
+            x={line.x}
+            y={line.y}
+            points={line.points}
+            stroke={line.stroke}
+            strokeWidth={line.strokeWidth}
+            tension={line.tension}
+            lineCap="round"
+            lineJoin="round"
+            globalCompositeOperation={
+              line.type === 'eraser' ? 'destination-out' : 'source-over'
+            }
+          />
+        );
+      }
+
+      case 'text': {
+        const text = element as TextElement;
+        return (
+          <Text
+            {...commonProps}
+            ref={(node) => setRef(element.id, node)}
+            x={text.x}
+            y={text.y}
+            text={text.text}
+            fontSize={text.fontSize}
+            fontFamily={text.fontFamily}
+            fill={text.fill}
+            width={text.width}
+            onDblClick={() => onTextDblClick(element)}
+            onDblTap={() => onTextDblClick(element)}
+          />
+        );
+      }
+
+      default:
+        return null;
+    }
+  };
+
+  return <>{elements.map(renderElement)}</>;
+};
