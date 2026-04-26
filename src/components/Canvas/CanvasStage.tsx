@@ -55,7 +55,16 @@ export const CanvasStage: React.FC = () => {
     updateElement,
     setSelectedIds,
     pushHistory,
+    setStageRef,
   } = useCanvasStore();
+
+  // Register stage ref for export functionality
+  useEffect(() => {
+    if (stageRef.current) {
+      setStageRef(stageRef.current);
+    }
+    return () => setStageRef(null);
+  }, [setStageRef]);
 
   // Responsive sizing
   useEffect(() => {
@@ -80,7 +89,8 @@ export const CanvasStage: React.FC = () => {
 
       // Select tool: handle deselection when clicking empty area
       if (activeTool === 'select') {
-        const clickedOnEmpty = event.target === stage;
+        const targetClassName = event.target.getClassName?.() ?? '';
+        const clickedOnEmpty = event.target === stage || targetClassName === 'Stage' || targetClassName === 'Layer';
         if (clickedOnEmpty) {
           setSelectedIds([]);
         }
@@ -89,7 +99,8 @@ export const CanvasStage: React.FC = () => {
 
       // Text tool: create new text element on click
       if (activeTool === 'text') {
-        const clickedOnEmpty = event.target === stage;
+        const targetClassName = event.target.getClassName?.() ?? '';
+        const clickedOnEmpty = event.target === stage || targetClassName === 'Stage' || targetClassName === 'Layer';
         if (clickedOnEmpty) {
           const id = generateId();
           const newText: TextElement = {

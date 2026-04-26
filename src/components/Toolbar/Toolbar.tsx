@@ -1,6 +1,7 @@
 import React from 'react';
 import { useCanvasStore } from '../../store/canvasStore';
 import { ToolButton } from './ToolButton';
+import { PopoverButton } from './StyleButton';
 import { ColorPicker } from './ColorPicker';
 import { StrokeWidthPicker } from './StrokeWidthPicker';
 import { ExportMenu } from './ExportMenu';
@@ -73,30 +74,57 @@ export const Toolbar: React.FC = () => {
 
       <div className="toolbar-divider" />
 
-      {/* Colors */}
+      {/* Stroke Color */}
       <div className="toolbar-section">
         <span className="toolbar-section-label">Stroke</span>
-        <ColorPicker
-          selectedColor={strokeColor}
-          onSelect={setStrokeColor}
-        />
-        <span className="toolbar-section-label" style={{ marginTop: 8 }}>Fill</span>
-        <ColorPicker
-          selectedColor={fillColor}
-          onSelect={setFillColor}
-          includeTransparent
-        />
+        <PopoverButton
+          id="tool-stroke"
+          label="Stroke"
+          preview={
+            <span
+              className="color-preview-swatch"
+              style={{ backgroundColor: strokeColor }}
+            />
+          }
+        >
+          <ColorPicker selectedColor={strokeColor} onSelect={setStrokeColor} />
+        </PopoverButton>
       </div>
 
-      <div className="toolbar-divider" />
+      {/* Fill Color */}
+      <div className="toolbar-section">
+        <span className="toolbar-section-label">Fill</span>
+        <PopoverButton
+          id="tool-fill"
+          label="Fill"
+          preview={
+            <span
+              className={`color-preview-swatch ${fillColor === 'transparent' ? 'color-preview-swatch--transparent' : ''}`}
+              style={{ backgroundColor: fillColor === 'transparent' ? undefined : fillColor }}
+            />
+          }
+        >
+          <ColorPicker selectedColor={fillColor} onSelect={setFillColor} includeTransparent />
+        </PopoverButton>
+      </div>
 
-      {/* Stroke width */}
+      {/* Stroke Width */}
       <div className="toolbar-section">
         <span className="toolbar-section-label">Width</span>
-        <StrokeWidthPicker
-          selectedWidth={strokeWidth}
-          onSelect={setStrokeWidth}
-        />
+        <PopoverButton
+          id="tool-width"
+          label="Width"
+          preview={
+            <span className="width-preview">
+              <span
+                className="width-preview-bar"
+                style={{ height: Math.max(strokeWidth, 2) }}
+              />
+            </span>
+          }
+        >
+          <StrokeWidthPicker selectedWidth={strokeWidth} onSelect={setStrokeWidth} />
+        </PopoverButton>
       </div>
 
       <div className="toolbar-divider" />

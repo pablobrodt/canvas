@@ -19,12 +19,18 @@ export const TextEditor: React.FC<TextEditorProps> = ({
   const textareaRef = useRef<HTMLTextAreaElement>(null);
 
   useEffect(() => {
-    const textareaElement = textareaRef.current;
-    if (textareaElement) {
-      textareaElement.focus();
-      textareaElement.value = text;
-      textareaElement.select();
-    }
+    // Small delay to ensure the element is rendered before focusing
+    const focusTimer = setTimeout(() => {
+      const textareaElement = textareaRef.current;
+      if (textareaElement) {
+        textareaElement.focus();
+        textareaElement.value = text;
+        // Move cursor to end
+        textareaElement.setSelectionRange(text.length, text.length);
+      }
+    }, 10);
+
+    return () => clearTimeout(focusTimer);
   }, [text]);
 
   const handleBlur = () => {
@@ -33,6 +39,9 @@ export const TextEditor: React.FC<TextEditorProps> = ({
   };
 
   const handleKeyDown = (event: React.KeyboardEvent) => {
+    // Stop propagation so canvas keyboard shortcuts don't fire
+    event.stopPropagation();
+
     if (event.key === 'Escape') {
       onDone(id, textareaRef.current?.value ?? '');
     }
@@ -46,15 +55,18 @@ export const TextEditor: React.FC<TextEditorProps> = ({
     <textarea
       ref={textareaRef}
       className="canvas-text-editor"
+      placeholder="Type here..."
       style={{
         position: 'absolute',
         top: y,
         left: x,
-        minWidth: Math.max(width, 100),
+        minWidth: Math.max(width, 120),
+        minHeight: fontSize * 1.6,
         fontSize,
         fontFamily,
         color: fill,
         lineHeight: 1.2,
+        caretColor: fill === 'transparent' ? '#fff' : fill,
       }}
       onBlur={handleBlur}
       onKeyDown={handleKeyDown}

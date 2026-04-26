@@ -315,6 +315,115 @@ html, body, #root {
   background: var(--accent);
 }
 
+/* ─── Popover Button ───────────────────────────────────────────── */
+.popover-wrapper {
+  position: relative;
+  display: flex;
+  justify-content: center;
+  width: 100%;
+}
+
+.popover-trigger {
+  width: 44px;
+  height: 36px;
+}
+
+/* Color preview swatch (stroke & fill buttons) */
+.color-preview-swatch {
+  width: 18px;
+  height: 18px;
+  border-radius: 4px;
+  border: 1.5px solid rgba(255, 255, 255, 0.15);
+  display: block;
+}
+
+.color-preview-swatch--transparent {
+  background: repeating-conic-gradient(
+    rgba(255, 255, 255, 0.15) 0% 25%,
+    transparent 0% 50%
+  ) 50% / 6px 6px !important;
+  border: 1.5px dashed rgba(255, 255, 255, 0.25);
+}
+
+/* Width preview (width button) */
+.width-preview {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 18px;
+  height: 18px;
+}
+
+.width-preview-bar {
+  width: 100%;
+  background: var(--text-primary);
+  border-radius: 999px;
+  min-height: 2px;
+}
+
+/* Flyout panel (rendered via portal) */
+.popover-panel {
+  background: var(--bg-toolbar);
+  backdrop-filter: blur(24px) saturate(1.4);
+  -webkit-backdrop-filter: blur(24px) saturate(1.4);
+  border: 1px solid var(--bg-toolbar-border);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-lg);
+  padding: 12px;
+  z-index: 300;
+  min-width: 140px;
+  animation: popoverIn 150ms ease-out;
+}
+
+@keyframes popoverIn {
+  from {
+    opacity: 0;
+    transform: translateY(-50%) translateX(-6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(-50%) translateX(0);
+  }
+}
+
+.popover-panel-label {
+  font-size: 9px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  color: var(--text-muted);
+  margin-bottom: 8px;
+  display: block;
+}
+
+.popover-panel .color-picker {
+  grid-template-columns: repeat(4, 1fr);
+  gap: 4px;
+}
+
+.popover-panel .color-swatch {
+  width: 24px;
+  height: 24px;
+  aspect-ratio: unset;
+}
+
+.popover-panel .stroke-picker {
+  flex-direction: row;
+  flex-wrap: wrap;
+  gap: 4px;
+}
+
+.popover-panel .stroke-option {
+  height: 28px;
+  width: 28px;
+  padding: 0;
+}
+
+.popover-panel .stroke-preview {
+  width: auto !important;
+  min-width: 14px;
+}
+
 /* ─── Export Menu ───────────────────────────────────────────────── */
 .export-menu {
   display: flex;
@@ -375,13 +484,32 @@ html, body, #root {
 
 /* ─── Text Editor Overlay ──────────────────────────────────────── */
 .canvas-text-editor {
-  background: transparent;
+  background: rgba(15, 15, 26, 0.6);
   border: 2px solid var(--accent);
   border-radius: 4px;
   outline: none;
   resize: none;
-  padding: 4px 6px;
+  padding: 6px 8px;
   z-index: 150;
-  box-shadow: 0 0 0 3px var(--accent-glow);
-  min-height: 1.5em;
+  box-shadow: 0 0 0 3px var(--accent-glow), 0 4px 20px rgba(0, 0, 0, 0.4);
+  min-height: 2em;
+  font-family: inherit;
+  overflow: hidden;
+  animation: textEditorFadeIn 150ms ease-out;
+}
+
+.canvas-text-editor::placeholder {
+  color: rgba(255, 255, 255, 0.3);
+  font-style: italic;
+}
+
+@keyframes textEditorFadeIn {
+  from {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
 }

@@ -11,7 +11,10 @@ export const useCanvasStore = create<CanvasStore>((set, get) => ({
   fillColor: 'transparent',
   strokeWidth: 2,
   fontSize: 24,
-  showGrid: true,
+  showGrid: false,
+
+  // Stage ref
+  stageRef: null,
 
   // History
   history: [[]],
@@ -60,6 +63,9 @@ export const useCanvasStore = create<CanvasStore>((set, get) => ({
 
   // ─── Grid ──────────────────────────────────────────────────────
   toggleGrid: () => set((state) => ({ showGrid: !state.showGrid })),
+
+  // ─── Stage Ref ─────────────────────────────────────────────────
+  setStageRef: (stage) => set({ stageRef: stage }),
 
   // ─── History ────────────────────────────────────────────────────
   pushHistory: () => {
