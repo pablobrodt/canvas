@@ -1,7 +1,7 @@
 import React from 'react';
 import { useCanvasStore } from '../../store/canvasStore';
 import { ToolButton } from './ToolButton';
-import { PopoverButton } from './StyleButton';
+import { PopoverButton } from './PopoverButton';
 import { ColorPicker } from './ColorPicker';
 import { StrokeWidthPicker } from './StrokeWidthPicker';
 import { ExportMenu } from './ExportMenu';
