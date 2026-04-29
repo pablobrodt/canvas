@@ -5,6 +5,7 @@ import { PopoverButton } from './PopoverButton';
 import { ColorPicker } from './ColorPicker';
 import { StrokeWidthPicker } from './StrokeWidthPicker';
 import { ExportMenu } from './ExportMenu';
+import { ImageMenu } from './ImageMenu';
 import type { ToolType } from '../../types/canvas';
 import {
   MousePointerIcon,
@@ -70,6 +71,14 @@ export const Toolbar: React.FC = () => {
             />
           ))}
         </div>
+      </div>
+
+      <div className="toolbar-divider" />
+
+      {/* Image Insertion */}
+      <div className="toolbar-section">
+        <span className="toolbar-section-label">Image</span>
+        <ImageMenu />
       </div>
 
       <div className="toolbar-divider" />

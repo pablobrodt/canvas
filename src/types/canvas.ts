@@ -9,7 +9,8 @@ export type ToolType =
   | 'circle'
   | 'ellipse'
   | 'arrow'
-  | 'text';
+  | 'text'
+  | 'image';
 
 // ─── Element Types ────────────────────────────────────────────────
 interface BaseElement {
@@ -68,6 +69,13 @@ export interface TextElement extends BaseElement {
   height: number;
 }
 
+export interface ImageElement extends BaseElement {
+  type: 'image';
+  src: string;
+  width: number;
+  height: number;
+}
+
 export type CanvasElement =
   | RectangleElement
   | CircleElement
@@ -75,7 +83,8 @@ export type CanvasElement =
   | ArrowElement
   | DrawElement
   | EraserElement
-  | TextElement;
+  | TextElement
+  | ImageElement;
 
 // ─── Store Types ──────────────────────────────────────────────────
 export interface CanvasState {

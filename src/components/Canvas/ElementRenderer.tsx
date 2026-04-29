@@ -18,7 +18,9 @@ import type {
   DrawElement,
   EraserElement,
   TextElement,
+  ImageElement,
 } from '../../types/canvas';
+import { URLImage } from './URLImage';
 
 interface ElementRendererProps {
   elements: CanvasElement[];
@@ -175,6 +177,19 @@ export const ElementRenderer: React.FC<ElementRendererProps> = ({
             width={text.width}
             onDblClick={() => onTextDblClick(element)}
             onDblTap={() => onTextDblClick(element)}
+          />
+        );
+      }
+
+      case 'image': {
+        const imageEl = element as ImageElement;
+        return (
+          <URLImage
+            {...commonProps}
+            ref={(node) => setRef(element.id, node)}
+            element={imageEl}
+            onSelect={() => onSelect(element.id)}
+            onDragEnd={(event: Konva.KonvaEventObject<DragEvent>) => onDragEnd(element.id, event.target.x(), event.target.y())}
           />
         );
       }

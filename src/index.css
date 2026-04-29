@@ -513,3 +513,141 @@ html, body, #root {
     transform: scale(1);
   }
 }
+
+/* ─── Image Menu Options ───────────────────────────────────────── */
+.image-menu-options {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.image-menu-btn {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  width: 100%;
+  padding: 8px 12px;
+  background: transparent;
+  border: none;
+  border-radius: var(--radius-sm);
+  color: var(--text-primary);
+  font-size: 11px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all var(--transition);
+  white-space: nowrap;
+}
+
+.image-menu-btn:hover {
+  background: var(--bg-hover);
+  color: var(--text-primary);
+}
+
+/* ─── URL Modal ────────────────────────────────────────────────── */
+.url-modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.6);
+  backdrop-filter: blur(4px);
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  animation: fadeIn 200ms ease-out;
+}
+
+.url-modal-container {
+  background: var(--bg-toolbar);
+  border: 1px solid var(--bg-toolbar-border);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-lg);
+  padding: 24px;
+  width: 100%;
+  max-width: 400px;
+  animation: slideUp 300ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.url-modal-title {
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin-bottom: 16px;
+}
+
+.url-modal-form {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.url-modal-input {
+  width: 100%;
+  padding: 12px 16px;
+  background: rgba(0, 0, 0, 0.3);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-sm);
+  color: var(--text-primary);
+  font-size: 14px;
+  outline: none;
+  transition: all var(--transition);
+}
+
+.url-modal-input:focus {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 2px var(--accent-glow);
+}
+
+.url-modal-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+}
+
+.url-modal-btn {
+  padding: 8px 16px;
+  border-radius: var(--radius-sm);
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all var(--transition);
+  border: none;
+}
+
+.url-modal-btn--cancel {
+  background: transparent;
+  color: var(--text-secondary);
+}
+
+.url-modal-btn--cancel:hover {
+  background: rgba(255, 255, 255, 0.05);
+  color: var(--text-primary);
+}
+
+.url-modal-btn--confirm {
+  background: var(--accent);
+  color: white;
+}
+
+.url-modal-btn--confirm:hover {
+  background: #6d28d9;
+  box-shadow: 0 0 12px var(--accent-glow);
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px) scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
