@@ -2,6 +2,8 @@ import { useEffect, useCallback } from 'react';
 import { CanvasStage } from './components/Canvas/CanvasStage';
 import { Toolbar } from './components/Toolbar/Toolbar';
 import { useCanvasStore } from './store/canvasStore';
+import { generateId } from './utils/idGenerator';
+import type { ImageElement } from './types/canvas';
 
 function App() {
   const {
@@ -60,6 +62,52 @@ function App() {
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, [handleKeyDown]);
+
+  // ─── Paste Handler ──────────────────────────────────────────────
+  const handlePaste = useCallback((event: ClipboardEvent) => {
+    // Don't capture when typing in text input
+    const target = event.target as HTMLElement;
+    if (target.tagName === 'TEXTAREA' || target.tagName === 'INPUT') return;
+
+    const items = event.clipboardData?.items;
+    if (!items) return;
+
+    for (let i = 0; i < items.length; i++) {
+      const item = items[i];
+      if (item.type.indexOf('image') !== -1) {
+        const file = item.getAsFile();
+        if (!file) continue;
+
+        const reader = new FileReader();
+        reader.onload = (e) => {
+          const dataUrl = e.target?.result as string;
+          const id = generateId();
+          const newImage: ImageElement = {
+            id,
+            type: 'image',
+            src: dataUrl,
+            x: window.innerWidth / 2 - 100,
+            y: window.innerHeight / 2 - 100,
+            width: 0,
+            height: 0,
+            rotation: 0,
+            opacity: 1,
+            stroke: 'transparent',
+            strokeWidth: 0,
+            fill: 'transparent',
+          };
+          useCanvasStore.getState().addElement(newImage);
+        };
+        reader.readAsDataURL(file);
+        break; // Only handle the first image
+      }
+    }
+  }, []);
+
+  useEffect(() => {
+    window.addEventListener('paste', handlePaste);
+    return () => window.removeEventListener('paste', handlePaste);
+  }, [handlePaste]);
 
   return (
     <div className="app" id="app-root">
