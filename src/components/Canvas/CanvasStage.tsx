@@ -371,7 +371,7 @@ export const CanvasStage: React.FC = () => {
         onTouchEnd={handleMouseUp}
       >
         {/* Background grid layer */}
-        <Layer listening={false}>
+        <Layer listening={false} name="grid-layer">
           <GridBackground
             width={stageSize.width}
             height={stageSize.height}

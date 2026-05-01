@@ -157,6 +157,7 @@ export const STROKE_WIDTHS = [1, 2, 4, 6, 10] as const;
 export const FONT_SIZES = [14, 18, 24, 32, 48, 64] as const;
 
 export const MAX_HISTORY = 50;
+export const EXPORT_PIXEL_RATIO = 2;
 
 export const IMAGE_DEFAULT_OFFSET = 100;
 export const DEFAULT_TEXT_WIDTH = 200;

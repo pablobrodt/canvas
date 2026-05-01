@@ -42,6 +42,7 @@ export const TransformerOverlay: React.FC<TransformerOverlayProps> = ({
   return (
     <Transformer
       ref={trRef}
+      name="transformer-overlay"
       rotateEnabled={true}
       enabledAnchors={[
         'top-left',
