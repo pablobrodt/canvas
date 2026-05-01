@@ -3,6 +3,7 @@ import { CanvasStage } from './components/Canvas/CanvasStage';
 import { Toolbar } from './components/Toolbar/Toolbar';
 import { useCanvasStore } from './store/canvasStore';
 import { generateId } from './utils/idGenerator';
+import { IMAGE_DEFAULT_OFFSET } from './types/canvas';
 import type { ImageElement } from './types/canvas';
 
 function App() {
@@ -10,6 +11,7 @@ function App() {
     activeTool, setActiveTool,
     selectedIds, deleteElements,
     undo, redo,
+    toggleGrid, addElement,
   } = useCanvasStore();
 
   // ─── Keyboard Shortcuts ─────────────────────────────────────────
@@ -52,10 +54,10 @@ function App() {
         case 'a': if (!isMetaKey) setActiveTool('arrow'); break;
         case 't': setActiveTool('text'); break;
         case 'e': setActiveTool('eraser'); break;
-        case 'g': useCanvasStore.getState().toggleGrid(); break;
+        case 'g': toggleGrid(); break;
       }
     },
-    [activeTool, selectedIds, deleteElements, setActiveTool, undo, redo]
+    [activeTool, selectedIds, deleteElements, setActiveTool, undo, redo, toggleGrid]
   );
 
   useEffect(() => {
@@ -80,14 +82,16 @@ function App() {
 
         const reader = new FileReader();
         reader.onload = (e) => {
-          const dataUrl = e.target?.result as string;
+          const result = e.target?.result;
+          if (typeof result !== 'string') return;
+          const dataUrl = result;
           const id = generateId();
           const newImage: ImageElement = {
             id,
             type: 'image',
             src: dataUrl,
-            x: window.innerWidth / 2 - 100,
-            y: window.innerHeight / 2 - 100,
+            x: window.innerWidth / 2 - IMAGE_DEFAULT_OFFSET,
+            y: window.innerHeight / 2 - IMAGE_DEFAULT_OFFSET,
             width: 0,
             height: 0,
             rotation: 0,
@@ -96,13 +100,13 @@ function App() {
             strokeWidth: 0,
             fill: 'transparent',
           };
-          useCanvasStore.getState().addElement(newImage);
+          addElement(newImage);
         };
         reader.readAsDataURL(file);
         break; // Only handle the first image
       }
     }
-  }, []);
+  }, [addElement]);
 
   useEffect(() => {
     window.addEventListener('paste', handlePaste);

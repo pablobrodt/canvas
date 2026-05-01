@@ -7,6 +7,7 @@ import { TransformerOverlay } from './TransformerOverlay';
 import { GridBackground } from './GridBackground';
 import { TextEditor } from './TextEditor';
 import { generateId } from '../../utils/idGenerator';
+import { DEFAULT_TEXT_WIDTH, LINE_HEIGHT_MULTIPLIER } from '../../types/canvas';
 import type {
   CanvasElement,
   DrawElement,
@@ -56,6 +57,7 @@ export const CanvasStage: React.FC = () => {
     setSelectedIds,
     pushHistory,
     setStageRef,
+    deleteElements,
   } = useCanvasStore();
 
   // Register stage ref for export functionality
@@ -76,9 +78,8 @@ export const CanvasStage: React.FC = () => {
   }, []);
 
   // ─── Mouse Handlers ─────────────────────────────────────────────
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const handleMouseDown = useCallback(
-    (event: Konva.KonvaEventObject<any>) => {
+    (event: Konva.KonvaEventObject<MouseEvent | TouchEvent>) => {
       // If editing text, don't process canvas clicks
       if (editingText) return;
 
@@ -116,8 +117,8 @@ export const CanvasStage: React.FC = () => {
             text: '',
             fontSize,
             fontFamily: 'Inter, sans-serif',
-            width: 200,
-            height: fontSize * 1.5,
+            width: DEFAULT_TEXT_WIDTH,
+            height: fontSize * LINE_HEIGHT_MULTIPLIER,
           };
           addElement(newText);
 
@@ -126,8 +127,8 @@ export const CanvasStage: React.FC = () => {
             id,
             x: pos.x,
             y: pos.y,
-            width: 200,
-            height: fontSize * 1.5,
+            width: DEFAULT_TEXT_WIDTH,
+            height: fontSize * LINE_HEIGHT_MULTIPLIER,
             text: '',
             fontSize,
             fontFamily: 'Inter, sans-serif',
@@ -229,9 +230,8 @@ export const CanvasStage: React.FC = () => {
     [activeTool, strokeColor, fillColor, strokeWidth, fontSize, addElement, setSelectedIds, editingText]
   );
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const handleMouseMove = useCallback(
-    (event: Konva.KonvaEventObject<any>) => {
+    (event: Konva.KonvaEventObject<MouseEvent | TouchEvent>) => {
       if (!isDrawing.current || !currentElementId.current) return;
 
       const stage = event.target.getStage();
@@ -332,14 +332,14 @@ export const CanvasStage: React.FC = () => {
     (id: string, newText: string) => {
       if (newText.trim() === '') {
         // Remove empty text elements
-        useCanvasStore.getState().deleteElements([id]);
+        deleteElements([id]);
       } else {
         updateElement(id, { text: newText } as Partial<TextElement>);
         pushHistory();
       }
       setEditingText(null);
     },
-    [updateElement, pushHistory]
+    [updateElement, pushHistory, deleteElements]
   );
 
   // ─── Cursor ─────────────────────────────────────────────────────

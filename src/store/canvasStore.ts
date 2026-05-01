@@ -71,7 +71,7 @@ export const useCanvasStore = create<CanvasStore>((set, get) => ({
   pushHistory: () => {
     const state = get();
     const newHistory = state.history.slice(0, state.historyIndex + 1);
-    const snapshot = JSON.parse(JSON.stringify(state.elements));
+    const snapshot = structuredClone(state.elements);
     newHistory.push(snapshot);
 
     // Trim history if too long
@@ -89,7 +89,7 @@ export const useCanvasStore = create<CanvasStore>((set, get) => ({
     const state = get();
     if (state.historyIndex > 0) {
       const newIndex = state.historyIndex - 1;
-      const snapshot = JSON.parse(JSON.stringify(state.history[newIndex]));
+      const snapshot = structuredClone(state.history[newIndex]);
       set({
         elements: snapshot,
         historyIndex: newIndex,
@@ -102,7 +102,7 @@ export const useCanvasStore = create<CanvasStore>((set, get) => ({
     const state = get();
     if (state.historyIndex < state.history.length - 1) {
       const newIndex = state.historyIndex + 1;
-      const snapshot = JSON.parse(JSON.stringify(state.history[newIndex]));
+      const snapshot = structuredClone(state.history[newIndex]);
       set({
         elements: snapshot,
         historyIndex: newIndex,
