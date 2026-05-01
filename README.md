@@ -1,73 +1,36 @@
-# React + TypeScript + Vite
+# 🎨 Canvas Whiteboard
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+A highly-performant, React-based digital whiteboard and drawing application built for seamless creativity and diagramming. 
 
-Currently, two official plugins are available:
+## 🚀 General Use
+Canvas is designed to be a fast, intuitive workspace for sketching ideas, creating flowcharts, and managing visual layouts. Whether you need a quick scratchpad for freehand drawing or a structured grid for geometric shapes and text, this tool provides a lightweight, entirely browser-based environment. It features a modern, clean UI with a comprehensive toolset and full keyboard shortcut support to keep your workflow uninterrupted.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+## ✨ Developed Features
 
-## React Compiler
+### Core Canvas Tools
+- **Select (V)**: Interact with, move, and edit existing elements on the board.
+- **Draw (D)**: Freehand drawing for sketching and annotations.
+- **Eraser (E)**: Precision erasing of freehand strokes.
+- **Shapes**: Create geometric elements including **Rectangles (R)**, **Circles (C)**, and **Ellipses (O)**.
+- **Lines & Arrows (A)**: Connect ideas and build flowcharts easily.
+- **Text (T)**: Double-click anywhere to add customizable, scalable typography.
+- **Image Integration**: Insert images via URL or simply **paste** them directly from your clipboard!
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+### Styling & Customization
+- **Color Palettes**: Independent control over **Stroke** and **Fill** colors, including transparent fills.
+- **Stroke Width**: Dynamically adjust the thickness of your lines and shape borders.
+- **Toggle Grid (G)**: Overlay an alignment grid to help structure your diagrams.
 
-## Expanding the ESLint configuration
+### Workspace Management
+- **Robust History**: Infinite Undo (⌘Z) and Redo (⌘⇧Z) powered by highly-performant state snapshots.
+- **Selection & Deletion**: Select individual elements and hit `Delete`/`Backspace` to remove them.
+- **Clear Board**: Instantly wipe the canvas clean to start fresh.
+- **Exporting**: Export your current canvas state (features accessible via the Export Menu).
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+## 🛠 Technical Architecture
+- **Frontend Framework**: React + Vite
+- **Language**: Strict TypeScript
+- **Canvas Rendering**: `react-konva` for native 60fps 2D rendering.
+- **State Management**: `zustand` (with `structuredClone` for highly-performant deep-copy history management).
+- **Agent-Driven**: Developed and maintained utilizing a structured AI Agent workflow (Architect, Product Owner, Developer, and Reviewer).
 
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
-
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
-
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
-
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
-
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
