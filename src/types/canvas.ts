@@ -1,4 +1,3 @@
-import type Konva from 'konva';
 
 // ─── Tool Types ───────────────────────────────────────────────────
 export type ToolType =
@@ -97,9 +96,6 @@ export interface CanvasState {
   fontSize: number;
   showGrid: boolean;
 
-  // Stage reference for export
-  stageRef: Konva.Stage | null;
-
   // History
   history: CanvasElement[][];
   historyIndex: number;
@@ -124,9 +120,6 @@ export interface CanvasActions {
 
   // Grid
   toggleGrid: () => void;
-
-  // Stage ref
-  setStageRef: (stage: Konva.Stage | null) => void;
 
   // History
   undo: () => void;

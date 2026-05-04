@@ -1,4 +1,5 @@
 import React from 'react';
+import type Konva from 'konva';
 import { useCanvasStore } from '../../store/canvasStore';
 import { ToolButton } from './ToolButton';
 import { PopoverButton } from './PopoverButton';
@@ -33,7 +34,11 @@ const TOOLS: { type: ToolType; label: string; icon: React.ReactNode; shortcut: s
   { type: 'eraser', label: 'Eraser', icon: <EraserIcon />, shortcut: 'E' },
 ];
 
-export const Toolbar: React.FC = () => {
+interface ToolbarProps {
+  stageRef: React.RefObject<Konva.Stage>;
+}
+
+export const Toolbar: React.FC<ToolbarProps> = ({ stageRef }) => {
   const {
     activeTool, setActiveTool,
     strokeColor, setStrokeColor,
@@ -181,7 +186,7 @@ export const Toolbar: React.FC = () => {
       {/* Export */}
       <div className="toolbar-section">
         <span className="toolbar-section-label">Export</span>
-        <ExportMenu />
+        <ExportMenu stageRef={stageRef} />
       </div>
 
       {/* Clear All - at the bottom */}

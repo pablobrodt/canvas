@@ -95,11 +95,13 @@ export const ImageMenu: React.FC = () => {
         onChange={handleFileUpload}
       />
 
-      <ImageUrlModal
-        isOpen={isUrlModalOpen}
-        onClose={() => setIsUrlModalOpen(false)}
-        onConfirm={handleUrlConfirm}
-      />
+      {isUrlModalOpen && (
+        <ImageUrlModal
+          isOpen={isUrlModalOpen}
+          onClose={() => setIsUrlModalOpen(false)}
+          onConfirm={handleUrlConfirm}
+        />
+      )}
     </>
   );
 };

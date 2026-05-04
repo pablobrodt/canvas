@@ -13,9 +13,6 @@ export const useCanvasStore = create<CanvasStore>((set, get) => ({
   fontSize: 24,
   showGrid: false,
 
-  // Stage ref
-  stageRef: null,
-
   // History
   history: [[]],
   historyIndex: 0,
@@ -25,6 +22,7 @@ export const useCanvasStore = create<CanvasStore>((set, get) => ({
     const state = get();
     const newElements = [...state.elements, element];
     set({ elements: newElements });
+    get().pushHistory();
   },
 
   updateElement: (id: string, changes: Partial<CanvasElement>) => {
@@ -63,9 +61,6 @@ export const useCanvasStore = create<CanvasStore>((set, get) => ({
 
   // ─── Grid ──────────────────────────────────────────────────────
   toggleGrid: () => set((state) => ({ showGrid: !state.showGrid })),
-
-  // ─── Stage Ref ─────────────────────────────────────────────────
-  setStageRef: (stage) => set({ stageRef: stage }),
 
   // ─── History ────────────────────────────────────────────────────
   pushHistory: () => {

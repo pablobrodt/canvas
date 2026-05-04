@@ -17,7 +17,6 @@ export const ImageUrlModal: React.FC<ImageUrlModalProps> = ({
 
   useEffect(() => {
     if (isOpen) {
-      setUrl('');
       setTimeout(() => {
         inputRef.current?.focus();
       }, 50);

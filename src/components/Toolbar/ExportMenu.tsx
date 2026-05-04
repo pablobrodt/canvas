@@ -1,17 +1,20 @@
 import React, { useCallback } from 'react';
-import { useCanvasStore } from '../../store/canvasStore';
+import type Konva from 'konva';
 import { DownloadIcon } from '../Icons';
 import { EXPORT_PIXEL_RATIO } from '../../types/canvas';
 
-export const ExportMenu: React.FC = () => {
-  const stageRef = useCanvasStore((state) => state.stageRef);
+interface ExportMenuProps {
+  stageRef: React.RefObject<Konva.Stage>;
+}
 
+export const ExportMenu: React.FC<ExportMenuProps> = ({ stageRef }) => {
   const exportAs = useCallback((format: 'png' | 'svg') => {
-    if (!stageRef) return;
+    const stage = stageRef.current;
+    if (!stage) return;
 
     // Find utility elements to hide during export
-    const gridLayer = stageRef.findOne('.grid-layer');
-    const transformer = stageRef.findOne('.transformer-overlay');
+    const gridLayer = stage.findOne('.grid-layer');
+    const transformer = stage.findOne('.transformer-overlay');
 
     const wasGridVisible = gridLayer?.visible();
     const wasTransformerVisible = transformer?.visible();
@@ -23,7 +26,7 @@ export const ExportMenu: React.FC = () => {
     try {
       // Use Konva's built-in toDataURL which composites ALL layers
       // This will result in a transparent background for PNGs
-      const dataUrl = stageRef.toDataURL({ pixelRatio: EXPORT_PIXEL_RATIO });
+      const dataUrl = stage.toDataURL({ pixelRatio: EXPORT_PIXEL_RATIO });
 
       if (format === 'png') {
         const link = document.createElement('a');
@@ -31,8 +34,8 @@ export const ExportMenu: React.FC = () => {
         link.href = dataUrl;
         link.click();
       } else if (format === 'svg') {
-        const canvasWidth = stageRef.width();
-        const canvasHeight = stageRef.height();
+        const canvasWidth = stage.width();
+        const canvasHeight = stage.height();
 
         const svgContent = `<?xml version="1.0" encoding="UTF-8"?>
 <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" 
@@ -52,7 +55,7 @@ export const ExportMenu: React.FC = () => {
       // Restore utility elements
       if (gridLayer) gridLayer.visible(!!wasGridVisible);
       if (transformer) transformer.visible(!!wasTransformerVisible);
-      stageRef.batchDraw();
+      stage.batchDraw();
     }
   }, [stageRef]);
 

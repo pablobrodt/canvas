@@ -19,11 +19,14 @@ import type {
   TextElement,
 } from '../../types/canvas';
 
-export const CanvasStage: React.FC = () => {
-  const stageRef = useRef<Konva.Stage>(null);
+interface CanvasStageProps {
+  stageRef: React.RefObject<Konva.Stage>;
+}
+
+export const CanvasStage: React.FC<CanvasStageProps> = ({ stageRef }) => {
   const isDrawing = useRef(false);
   const drawStartPos = useRef<{ x: number; y: number } | null>(null);
-  const currentElementId = useRef<string | null>(null);
+  const [previewElement, setPreviewElement] = useState<CanvasElement | null>(null);
 
   const [stageSize, setStageSize] = useState({
     width: window.innerWidth,
@@ -56,17 +59,8 @@ export const CanvasStage: React.FC = () => {
     updateElement,
     setSelectedIds,
     pushHistory,
-    setStageRef,
     deleteElements,
   } = useCanvasStore();
-
-  // Register stage ref for export functionality
-  useEffect(() => {
-    if (stageRef.current) {
-      setStageRef(stageRef.current);
-    }
-    return () => setStageRef(null);
-  }, [setStageRef]);
 
   // Responsive sizing
   useEffect(() => {
@@ -141,9 +135,8 @@ export const CanvasStage: React.FC = () => {
       isDrawing.current = true;
       drawStartPos.current = pos;
 
+      const id = generateId();
       if (activeTool === 'draw' || activeTool === 'eraser') {
-        const id = generateId();
-        currentElementId.current = id;
         const newLine: DrawElement | EraserElement = {
           id,
           type: activeTool,
@@ -157,10 +150,8 @@ export const CanvasStage: React.FC = () => {
           points: [pos.x, pos.y],
           tension: 0.4,
         };
-        addElement(newLine);
+        setPreviewElement(newLine);
       } else if (activeTool === 'rectangle') {
-        const id = generateId();
-        currentElementId.current = id;
         const newRect: RectangleElement = {
           id,
           type: 'rectangle',
@@ -175,10 +166,8 @@ export const CanvasStage: React.FC = () => {
           height: 0,
           cornerRadius: 0,
         };
-        addElement(newRect);
+        setPreviewElement(newRect);
       } else if (activeTool === 'circle') {
-        const id = generateId();
-        currentElementId.current = id;
         const newCircle: CircleElement = {
           id,
           type: 'circle',
@@ -191,10 +180,8 @@ export const CanvasStage: React.FC = () => {
           fill: fillColor,
           radius: 0,
         };
-        addElement(newCircle);
+        setPreviewElement(newCircle);
       } else if (activeTool === 'ellipse') {
-        const id = generateId();
-        currentElementId.current = id;
         const newEllipse: EllipseElement = {
           id,
           type: 'ellipse',
@@ -208,10 +195,8 @@ export const CanvasStage: React.FC = () => {
           radiusX: 0,
           radiusY: 0,
         };
-        addElement(newEllipse);
+        setPreviewElement(newEllipse);
       } else if (activeTool === 'arrow') {
-        const id = generateId();
-        currentElementId.current = id;
         const newArrow: ArrowElement = {
           id,
           type: 'arrow',
@@ -224,7 +209,7 @@ export const CanvasStage: React.FC = () => {
           fill: strokeColor,
           points: [pos.x, pos.y, pos.x, pos.y],
         };
-        addElement(newArrow);
+        setPreviewElement(newArrow);
       }
     },
     [activeTool, strokeColor, fillColor, strokeWidth, fontSize, addElement, setSelectedIds, editingText]
@@ -232,64 +217,62 @@ export const CanvasStage: React.FC = () => {
 
   const handleMouseMove = useCallback(
     (event: Konva.KonvaEventObject<MouseEvent | TouchEvent>) => {
-      if (!isDrawing.current || !currentElementId.current) return;
+      if (!isDrawing.current || !previewElement) return;
 
       const stage = event.target.getStage();
       if (!stage) return;
       const pos = stage.getPointerPosition();
       if (!pos) return;
 
-      const id = currentElementId.current;
-
-      if (activeTool === 'draw' || activeTool === 'eraser') {
-        const element = elements.find((foundElement) => foundElement.id === id) as
-          | DrawElement
-          | EraserElement
-          | undefined;
-        if (element) {
-          const newPoints = [...element.points, pos.x, pos.y];
-          updateElement(id, { points: newPoints });
-        }
+      if ((activeTool === 'draw' || activeTool === 'eraser') && previewElement.type === activeTool) {
+        const element = previewElement as DrawElement | EraserElement;
+        const newPoints = [...element.points, pos.x, pos.y];
+        setPreviewElement({ ...element, points: newPoints });
       } else if (activeTool === 'rectangle' && drawStartPos.current) {
         const start = drawStartPos.current;
         const width = pos.x - start.x;
         const height = pos.y - start.y;
-        updateElement(id, {
+        setPreviewElement({
+          ...previewElement,
           x: width < 0 ? pos.x : start.x,
           y: height < 0 ? pos.y : start.y,
           width: Math.abs(width),
           height: Math.abs(height),
-        } as Partial<RectangleElement>);
+        } as RectangleElement);
       } else if (activeTool === 'circle' && drawStartPos.current) {
         const start = drawStartPos.current;
         const dx = pos.x - start.x;
         const dy = pos.y - start.y;
         const radius = Math.sqrt(dx * dx + dy * dy);
-        updateElement(id, { radius } as Partial<CircleElement>);
+        setPreviewElement({ ...previewElement, radius } as CircleElement);
       } else if (activeTool === 'ellipse' && drawStartPos.current) {
         const start = drawStartPos.current;
-        updateElement(id, {
+        setPreviewElement({
+          ...previewElement,
           radiusX: Math.abs(pos.x - start.x),
           radiusY: Math.abs(pos.y - start.y),
-        } as Partial<EllipseElement>);
+        } as EllipseElement);
       } else if (activeTool === 'arrow' && drawStartPos.current) {
         const start = drawStartPos.current;
-        updateElement(id, {
+        setPreviewElement({
+          ...previewElement,
           points: [start.x, start.y, pos.x, pos.y],
-        } as Partial<ArrowElement>);
+        } as ArrowElement);
       }
     },
-    [activeTool, elements, updateElement]
+    [activeTool, previewElement]
   );
 
   const handleMouseUp = useCallback(() => {
     if (isDrawing.current) {
+      if (previewElement) {
+        addElement(previewElement);
+      }
       isDrawing.current = false;
-      currentElementId.current = null;
+      setPreviewElement(null);
       drawStartPos.current = null;
-      pushHistory();
     }
-  }, [pushHistory]);
+  }, [addElement, previewElement]);
 
   // ─── Element Interaction ────────────────────────────────────────
   const handleElementSelect = useCallback(
@@ -383,6 +366,7 @@ export const CanvasStage: React.FC = () => {
         <Layer>
           <ElementRenderer
             elements={elements}
+            previewElement={previewElement}
             selectedIds={selectedIds}
             activeTool={activeTool}
             onSelect={handleElementSelect}

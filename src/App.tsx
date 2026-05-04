@@ -1,4 +1,5 @@
-import { useEffect, useCallback } from 'react';
+import { useEffect, useCallback, useRef } from 'react';
+import type Konva from 'konva';
 import { CanvasStage } from './components/Canvas/CanvasStage';
 import { Toolbar } from './components/Toolbar/Toolbar';
 import { useCanvasStore } from './store/canvasStore';
@@ -7,8 +8,10 @@ import { IMAGE_DEFAULT_OFFSET } from './types/canvas';
 import type { ImageElement } from './types/canvas';
 
 function App() {
+  const stageRef = useRef<Konva.Stage>(null!);
+
   const {
-    activeTool, setActiveTool,
+    setActiveTool,
     selectedIds, deleteElements,
     undo, redo,
     toggleGrid, addElement,
@@ -57,7 +60,7 @@ function App() {
         case 'g': toggleGrid(); break;
       }
     },
-    [activeTool, selectedIds, deleteElements, setActiveTool, undo, redo, toggleGrid]
+    [selectedIds, deleteElements, setActiveTool, undo, redo, toggleGrid]
   );
 
   useEffect(() => {
@@ -115,8 +118,8 @@ function App() {
 
   return (
     <div className="app" id="app-root">
-      <Toolbar />
-      <CanvasStage />
+      <Toolbar stageRef={stageRef} />
+      <CanvasStage stageRef={stageRef} />
     </div>
   );
 }
