@@ -22,6 +22,9 @@ import {
   TrashIcon,
   GridIcon,
 } from '../Icons';
+import { version } from '../../../package.json';
+
+const APP_VERSION = `v${version}`;
 
 const TOOLS: { type: ToolType; label: string; icon: React.ReactNode; shortcut: string }[] = [
   { type: 'select', label: 'Select', icon: <MousePointerIcon />, shortcut: 'V' },
@@ -54,7 +57,7 @@ export const Toolbar: React.FC<ToolbarProps> = ({ stageRef }) => {
   return (
     <div className="toolbar" id="main-toolbar">
       {/* Logo */}
-      <div className="toolbar-logo">
+      <div className="toolbar-logo" title={APP_VERSION}>
         <span className="toolbar-logo-icon">◆</span>
         <span className="toolbar-logo-text">Canvas</span>
       </div>
