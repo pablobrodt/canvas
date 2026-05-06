@@ -1,9 +1,9 @@
-# 🎨 Canvas Whiteboard
+# 🎨 Picasso
 
 A highly-performant, React-based digital whiteboard and drawing application built for seamless creativity and diagramming. 
 
 ## 🚀 General Use
-Canvas is designed to be a fast, intuitive workspace for sketching ideas, creating flowcharts, and managing visual layouts. Whether you need a quick scratchpad for freehand drawing or a structured grid for geometric shapes and text, this tool provides a lightweight, entirely browser-based environment. It features a modern, clean UI with a comprehensive toolset and full keyboard shortcut support to keep your workflow uninterrupted.
+Picasso is designed to be a fast, intuitive workspace for sketching ideas, creating flowcharts, and managing visual layouts. Whether you need a quick scratchpad for freehand drawing or a structured grid for geometric shapes and text, this tool provides a lightweight, entirely browser-based environment. It features a modern, clean UI with a comprehensive toolset and full keyboard shortcut support to keep your workflow uninterrupted.
 
 ## ✨ Developed Features
 
