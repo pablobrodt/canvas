@@ -59,7 +59,7 @@ export const Toolbar: React.FC<ToolbarProps> = ({ stageRef }) => {
       {/* Logo */}
       <div className="toolbar-logo" title={APP_VERSION}>
         <span className="toolbar-logo-icon">◆</span>
-        <span className="toolbar-logo-text">Canvas</span>
+        <span className="toolbar-logo-text">Picasso</span>
       </div>
 
       <div className="toolbar-divider" />
