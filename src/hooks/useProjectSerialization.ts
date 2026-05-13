@@ -49,7 +49,7 @@ export const useProjectSerialization = () => {
 };
 
 // Type Guards for Validation
-function isValidProjectFile(data: any): data is { version: string; elements: CanvasElement[] } {
+function isValidProjectFile(data: unknown): data is { version: string; elements: CanvasElement[] } {
   if (!data || typeof data !== 'object') return false;
   if (!('version' in data) || typeof data.version !== 'string') return false;
   if (!('elements' in data) || !Array.isArray(data.elements)) return false;
@@ -57,39 +57,41 @@ function isValidProjectFile(data: any): data is { version: string; elements: Can
   return data.elements.every(isValidCanvasElement);
 }
 
-function isValidCanvasElement(element: any): element is CanvasElement {
+function isValidCanvasElement(element: unknown): element is CanvasElement {
   if (!element || typeof element !== 'object') return false;
 
   // Check BaseElement properties
   const basePropsValid =
-    typeof element.id === 'string' &&
-    typeof element.type === 'string' &&
-    typeof element.x === 'number' &&
-    typeof element.y === 'number' &&
-    typeof element.rotation === 'number' &&
-    typeof element.opacity === 'number' &&
-    typeof element.stroke === 'string' &&
-    typeof element.strokeWidth === 'number' &&
-    typeof element.fill === 'string';
+    'id' in element && typeof element.id === 'string' &&
+    'type' in element && typeof element.type === 'string' &&
+    'x' in element && typeof element.x === 'number' &&
+    'y' in element && typeof element.y === 'number' &&
+    'rotation' in element && typeof element.rotation === 'number' &&
+    'opacity' in element && typeof element.opacity === 'number' &&
+    'stroke' in element && typeof element.stroke === 'string' &&
+    'strokeWidth' in element && typeof element.strokeWidth === 'number' &&
+    'fill' in element && typeof element.fill === 'string';
 
   if (!basePropsValid) return false;
 
-  switch (element.type) {
+  const el = element as Record<string, unknown>;
+
+  switch (el.type) {
     case 'rectangle':
-      return typeof element.width === 'number' && typeof element.height === 'number' && typeof element.cornerRadius === 'number';
+      return typeof el.width === 'number' && typeof el.height === 'number' && typeof el.cornerRadius === 'number';
     case 'circle':
-      return typeof element.radius === 'number';
+      return typeof el.radius === 'number';
     case 'ellipse':
-      return typeof element.radiusX === 'number' && typeof element.radiusY === 'number';
+      return typeof el.radiusX === 'number' && typeof el.radiusY === 'number';
     case 'arrow':
-      return Array.isArray(element.points) && element.points.every((p: any) => typeof p === 'number');
+      return Array.isArray(el.points) && el.points.every((p: unknown) => typeof p === 'number');
     case 'draw':
     case 'eraser':
-      return Array.isArray(element.points) && element.points.every((p: any) => typeof p === 'number') && typeof element.tension === 'number';
+      return Array.isArray(el.points) && el.points.every((p: unknown) => typeof p === 'number') && typeof el.tension === 'number';
     case 'text':
-      return typeof element.text === 'string' && typeof element.fontSize === 'number' && typeof element.fontFamily === 'string' && typeof element.width === 'number' && typeof element.height === 'number';
+      return typeof el.text === 'string' && typeof el.fontSize === 'number' && typeof el.fontFamily === 'string' && typeof el.width === 'number' && typeof el.height === 'number';
     case 'image':
-      return typeof element.src === 'string' && typeof element.width === 'number' && typeof element.height === 'number';
+      return typeof el.src === 'string' && typeof el.width === 'number' && typeof el.height === 'number';
     default:
       return false; // Unknown type
   }
