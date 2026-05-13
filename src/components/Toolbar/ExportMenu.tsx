@@ -61,13 +61,46 @@ export const ExportMenu: React.FC<ExportMenuProps> = ({ stageRef }) => {
 
   return (
     <div className="export-menu">
-      <button className="export-btn" onClick={() => exportAs('png')} title="Export as PNG">
+      <button 
+        className="export-btn" 
+        onClick={isCanvasEmpty ? undefined : () => exportAs('png')} 
+        title="Export as PNG"
+        disabled={isCanvasEmpty}
+        aria-disabled={isCanvasEmpty}
+        style={isCanvasEmpty ? { opacity: 0.5, pointerEvents: 'none' } : undefined}
+      >
         <DownloadIcon />
         <span>PNG</span>
       </button>
-      <button className="export-btn" onClick={() => exportAs('svg')} title="Export as SVG">
+      <button 
+        className="export-btn" 
+        onClick={isCanvasEmpty ? undefined : () => exportAs('svg')} 
+        title="Export as SVG"
+        disabled={isCanvasEmpty}
+        aria-disabled={isCanvasEmpty}
+        style={isCanvasEmpty ? { opacity: 0.5, pointerEvents: 'none' } : undefined}
+      >
         <DownloadIcon />
         <span>SVG</span>
+      </button>
+      <button 
+        className="export-btn" 
+        onClick={isCanvasEmpty ? undefined : () => alert("JSON Export logic will be implemented in Issue 15")} 
+        title="Export as JSON"
+        disabled={isCanvasEmpty}
+        aria-disabled={isCanvasEmpty}
+        style={isCanvasEmpty ? { opacity: 0.5, pointerEvents: 'none' } : undefined}
+      >
+        <DownloadIcon />
+        <span>JSON (Exp)</span>
+      </button>
+      <button 
+        className="export-btn" 
+        onClick={handleImportClick} 
+        title="Import JSON"
+      >
+        <DownloadIcon /> {/* Ideally use an Upload icon here, but DownloadIcon will do for now if not available */}
+        <span>JSON (Imp)</span>
       </button>
     </div>
   );

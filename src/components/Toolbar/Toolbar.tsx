@@ -188,13 +188,20 @@ export const Toolbar: React.FC<ToolbarProps> = ({ stageRef }) => {
 
       {/* Export */}
       <div className="toolbar-section">
-        <span className="toolbar-section-label">Export</span>
-        <ExportMenu stageRef={stageRef} />
+        <span className="toolbar-section-label">Export / Import</span>
+        <ExportMenu stageRef={stageRef} isCanvasEmpty={isCanvasEmpty} />
       </div>
 
       {/* Clear All - at the bottom */}
       <div className="toolbar-spacer" />
-      <button className="toolbar-clear-btn" onClick={clearAll} title="Clear All">
+      <button 
+        className="toolbar-clear-btn" 
+        onClick={isCanvasEmpty ? undefined : clearAll} 
+        disabled={isCanvasEmpty}
+        aria-disabled={isCanvasEmpty}
+        title="Clear All"
+        style={isCanvasEmpty ? { opacity: 0.5, pointerEvents: 'none' } : undefined}
+      >
         Clear All
       </button>
     </div>
