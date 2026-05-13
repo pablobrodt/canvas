@@ -20,6 +20,7 @@ import type {
   TextElement,
   ImageElement,
 } from '../../types/canvas';
+import { ARROW_POINTER_BASE, ARROW_POINTER_SCALE } from '../../types/canvas';
 import { URLImage } from './URLImage';
 
 interface ElementRendererProps {
@@ -124,8 +125,8 @@ const SingleElementRenderer: React.FC<SingleElementRendererProps> = memo(({
           fill={arrow.fill}
           stroke={arrow.stroke}
           strokeWidth={arrow.strokeWidth}
-          pointerLength={10 + arrow.strokeWidth * 2}
-          pointerWidth={10 + arrow.strokeWidth * 2}
+          pointerLength={ARROW_POINTER_BASE + arrow.strokeWidth * ARROW_POINTER_SCALE}
+          pointerWidth={ARROW_POINTER_BASE + arrow.strokeWidth * ARROW_POINTER_SCALE}
         />
       );
     }

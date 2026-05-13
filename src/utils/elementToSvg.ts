@@ -8,6 +8,11 @@ import type {
   TextElement,
   ImageElement,
 } from '../types/canvas';
+import {
+  ARROW_POINTER_BASE,
+  ARROW_POINTER_SCALE,
+  LINE_HEIGHT_MULTIPLIER,
+} from '../types/canvas';
 
 // ─── Attribute Helpers ────────────────────────────────────────────
 
@@ -17,7 +22,8 @@ const escapeXml = (value: string): string =>
     .replace(/&/g, '&amp;')
     .replace(/</g, '&lt;')
     .replace(/>/g, '&gt;')
-    .replace(/"/g, '&quot;');
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&apos;');
 
 /** Maps `transparent` to `none` for SVG fill/stroke attributes. */
 const svgColor = (color: string): string =>
@@ -73,12 +79,6 @@ const pointsToSmoothPath = (points: number[]): string => {
 
   const parts: string[] = [`M${points[0]},${points[1]}`];
 
-  // For just two points (4 values) draw a line
-  if (points.length <= 4) {
-    parts.push(`L${points[2]},${points[3]}`);
-    return parts.join(' ');
-  }
-
   // Use quadratic bezier through midpoints for smooth curves
   for (let i = 0; i < points.length - 2; i += 2) {
     const x0 = points[i];
@@ -109,6 +109,7 @@ const pointsToSmoothPath = (points: number[]): string => {
   return parts.join(' ');
 };
 
+/** Note: Bypasses presentationAttrs() because draw paths always use fill="none". */
 const drawToSvg = (el: DrawElement): string => {
   const d = pointsToSmoothPath(el.points);
   const rot = rotationAttr(el.rotation, el.x, el.y);
@@ -130,8 +131,8 @@ const arrowToSvg = (el: ArrowElement): string => {
   const x2 = pts[pts.length - 2];
   const y2 = pts[pts.length - 1];
 
-  const pointerLength = 10 + el.strokeWidth * 2;
-  const pointerWidth = 10 + el.strokeWidth * 2;
+  const pointerLength = ARROW_POINTER_BASE + el.strokeWidth * ARROW_POINTER_SCALE;
+  const pointerWidth = ARROW_POINTER_BASE + el.strokeWidth * ARROW_POINTER_SCALE;
 
   // Calculate arrowhead direction
   const angle = Math.atan2(y2 - y1, x2 - x1);
@@ -175,7 +176,7 @@ const textToSvg = (el: TextElement): string => {
   const tspans = lines
     .map(
       (line, i) =>
-        `    <tspan x="${el.x}" dy="${i === 0 ? 0 : el.fontSize * 1.2}">${line}</tspan>`
+        `    <tspan x="${el.x}" dy="${i === 0 ? 0 : el.fontSize * LINE_HEIGHT_MULTIPLIER}">${line}</tspan>`
     )
     .join('\n');
 

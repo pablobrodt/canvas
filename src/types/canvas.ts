@@ -152,6 +152,9 @@ export const FONT_SIZES = [14, 18, 24, 32, 48, 64] as const;
 export const MAX_HISTORY = 50;
 export const EXPORT_PIXEL_RATIO = 2;
 
+export const ARROW_POINTER_BASE = 10;
+export const ARROW_POINTER_SCALE = 2;
+
 export const IMAGE_DEFAULT_OFFSET = 100;
 export const DEFAULT_TEXT_WIDTH = 200;
 export const LINE_HEIGHT_MULTIPLIER = 1.5;

@@ -5,12 +5,20 @@ import { buildSvgDocument } from '../utils/elementToSvg';
 import { EXPORT_PIXEL_RATIO } from '../types/canvas';
 
 /**
+ * The public API returned by the useExportCanvas hook.
+ */
+interface ExportCanvasActions {
+  exportAsPng: () => void;
+  exportAsSvg: () => void;
+}
+
+/**
  * Custom hook that encapsulates all canvas export logic.
  * Provides `exportAsPng` and `exportAsSvg` callbacks.
  *
  * @param stageRef - React ref to the Konva Stage (needed for PNG rasterization + dimensions)
  */
-export const useExportCanvas = (stageRef: React.RefObject<Konva.Stage>) => {
+export const useExportCanvas = (stageRef: React.RefObject<Konva.Stage>): ExportCanvasActions => {
   const elements = useCanvasStore((state) => state.elements);
 
   /**
