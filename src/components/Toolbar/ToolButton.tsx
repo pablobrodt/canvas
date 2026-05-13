@@ -14,11 +14,13 @@ export const ToolButton: React.FC<ToolButtonProps> = ({
 }) => {
   return (
     <button
-      className={`tool-btn ${isActive ? 'tool-btn--active' : ''}`}
-      onClick={onClick}
+      className={`tool-btn ${isActive ? 'tool-btn--active' : ''} ${disabled ? 'tool-btn--disabled' : ''}`}
+      onClick={disabled ? undefined : onClick}
       disabled={disabled}
+      aria-disabled={disabled}
       title={`${label} (${shortcut})`}
       id={`tool-${label.toLowerCase()}`}
+      style={disabled ? { opacity: 0.5, pointerEvents: 'none' } : undefined}
     >
       <span className="tool-btn-icon">{icon}</span>
       <span className="tool-btn-tooltip">
