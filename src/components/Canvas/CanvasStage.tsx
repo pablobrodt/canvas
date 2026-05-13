@@ -79,8 +79,13 @@ export const CanvasStage: React.FC<CanvasStageProps> = ({ stageRef }) => {
 
       const stage = event.target.getStage();
       if (!stage) return;
-      const pos = stage.getPointerPosition();
-      if (!pos) return;
+      const rawPos = stage.getPointerPosition();
+      if (!rawPos) return;
+
+      const pos = {
+        x: isSnapEnabled && showGrid && activeTool !== 'draw' && activeTool !== 'eraser' ? snapToGrid(rawPos.x, gridSize) : rawPos.x,
+        y: isSnapEnabled && showGrid && activeTool !== 'draw' && activeTool !== 'eraser' ? snapToGrid(rawPos.y, gridSize) : rawPos.y,
+      };
 
       // Select tool: handle deselection when clicking empty area
       if (activeTool === 'select') {
@@ -260,7 +265,7 @@ export const CanvasStage: React.FC<CanvasStageProps> = ({ stageRef }) => {
         } as ArrowElement);
       }
     },
-    [activeTool, previewElement]
+    [activeTool, previewElement, showGrid, isSnapEnabled, gridSize]
   );
 
   const handleMouseUp = useCallback(() => {
@@ -369,11 +374,13 @@ export const CanvasStage: React.FC<CanvasStageProps> = ({ stageRef }) => {
             previewElement={previewElement}
             selectedIds={selectedIds}
             activeTool={activeTool}
+            isSnapEnabled={isSnapEnabled && showGrid}
+            gridSize={gridSize}
             onSelect={handleElementSelect}
             onDragEnd={handleElementDragEnd}
             onTextDblClick={handleTextDblClick}
           />
-          <TransformerOverlay selectedIds={selectedIds} />
+          <TransformerOverlay selectedIds={selectedIds} isSnapEnabled={isSnapEnabled && showGrid} gridSize={gridSize} />
         </Layer>
       </Stage>
 

@@ -1,13 +1,18 @@
 import React, { useEffect, useRef } from 'react';
 import { Transformer } from 'react-konva';
 import type Konva from 'konva';
+import { snapToGrid } from '../../utils/gridSnapping';
 
 interface TransformerOverlayProps {
   selectedIds: string[];
+  isSnapEnabled?: boolean;
+  gridSize?: number;
 }
 
 export const TransformerOverlay: React.FC<TransformerOverlayProps> = ({
   selectedIds,
+  isSnapEnabled,
+  gridSize = 20,
 }) => {
   const trRef = useRef<Konva.Transformer>(null);
 
@@ -66,6 +71,17 @@ export const TransformerOverlay: React.FC<TransformerOverlayProps> = ({
         if (Math.abs(newBox.width) < 5 || Math.abs(newBox.height) < 5) {
           return _oldBox;
         }
+        
+        if (isSnapEnabled) {
+          return {
+            ...newBox,
+            x: snapToGrid(newBox.x, gridSize),
+            y: snapToGrid(newBox.y, gridSize),
+            width: snapToGrid(newBox.width, gridSize),
+            height: snapToGrid(newBox.height, gridSize),
+          };
+        }
+        
         return newBox;
       }}
     />

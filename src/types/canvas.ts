@@ -120,6 +120,8 @@ export interface CanvasActions {
 
   // Grid
   toggleGrid: () => void;
+  toggleSnap: () => void;
+  setGridSize: (size: number) => void;
 
   // History
   undo: () => void;

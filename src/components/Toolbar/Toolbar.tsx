@@ -184,6 +184,45 @@ export const Toolbar: React.FC<ToolbarProps> = ({ stageRef }) => {
         </div>
       </div>
 
+      {showGrid && (
+        <>
+          <div className="toolbar-divider" />
+          <div className="toolbar-section">
+            <span className="toolbar-section-label">Grid</span>
+            <div className="toolbar-actions" style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+              <label style={{ display: 'flex', alignItems: 'center', gap: '8px', fontSize: '12px', color: '#c8c8c8' }}>
+                <input 
+                  type="checkbox" 
+                  checked={isSnapEnabled} 
+                  onChange={toggleSnap} 
+                  style={{ accentColor: '#7c3aed' }}
+                />
+                Snap to Grid
+              </label>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '8px', fontSize: '12px', color: '#c8c8c8' }}>
+                Size:
+                <input
+                  type="number"
+                  min={5}
+                  max={100}
+                  value={gridSize}
+                  onChange={(e) => setGridSize(Number(e.target.value))}
+                  style={{ 
+                    width: '50px', 
+                    background: '#1a1a2e', 
+                    border: '1px solid #505050', 
+                    color: '#fff', 
+                    borderRadius: '4px',
+                    padding: '2px 4px'
+                  }}
+                />
+                px
+              </div>
+            </div>
+          </div>
+        </>
+      )}
+
       <div className="toolbar-divider" />
 
       {/* Export */}
