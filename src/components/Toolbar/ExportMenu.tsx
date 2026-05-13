@@ -1,13 +1,17 @@
-import React, { useCallback } from 'react';
+import React, { useCallback, useRef } from 'react';
 import type Konva from 'konva';
-import { DownloadIcon } from '../Icons';
+import { DownloadIcon, UploadIcon } from '../Icons';
 import { EXPORT_PIXEL_RATIO } from '../../types/canvas';
+import { useProjectSerialization } from '../../hooks/useProjectSerialization';
 
 interface ExportMenuProps {
   stageRef: React.RefObject<Konva.Stage>;
 }
 
 export const ExportMenu: React.FC<ExportMenuProps> = ({ stageRef }) => {
+  const { exportJSON, importJSON } = useProjectSerialization();
+  const fileInputRef = useRef<HTMLInputElement>(null);
+
   const exportAs = useCallback((format: 'png' | 'svg') => {
     const stage = stageRef.current;
     if (!stage) return;
@@ -59,6 +63,16 @@ export const ExportMenu: React.FC<ExportMenuProps> = ({ stageRef }) => {
     }
   }, [stageRef]);
 
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      importJSON(file);
+    }
+    if (fileInputRef.current) {
+      fileInputRef.current.value = '';
+    }
+  };
+
   return (
     <div className="export-menu">
       <button className="export-btn" onClick={() => exportAs('png')} title="Export as PNG">
@@ -69,6 +83,22 @@ export const ExportMenu: React.FC<ExportMenuProps> = ({ stageRef }) => {
         <DownloadIcon />
         <span>SVG</span>
       </button>
+      <button className="export-btn" onClick={exportJSON} title="Export Project as JSON">
+        <DownloadIcon />
+        <span>JSON</span>
+      </button>
+      <div className="toolbar-divider" style={{ margin: '4px 0', width: '100%', height: '1px' }} />
+      <button className="export-btn" onClick={() => fileInputRef.current?.click()} title="Import Project JSON">
+        <UploadIcon />
+        <span>Import JSON</span>
+      </button>
+      <input
+        type="file"
+        ref={fileInputRef}
+        onChange={handleFileChange}
+        accept=".json"
+        style={{ display: 'none' }}
+      />
     </div>
   );
 };
