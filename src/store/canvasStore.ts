@@ -61,6 +61,8 @@ export const useCanvasStore = create<CanvasStore>((set, get) => ({
 
   // ─── Grid ──────────────────────────────────────────────────────
   toggleGrid: () => set((state) => ({ showGrid: !state.showGrid })),
+  toggleSnap: () => set((state) => ({ isSnapEnabled: !state.isSnapEnabled })),
+  setGridSize: (size) => set({ gridSize: size }),
 
   // ─── History ────────────────────────────────────────────────────
   pushHistory: () => {

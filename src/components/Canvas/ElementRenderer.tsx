@@ -45,6 +45,8 @@ const SingleElementRenderer: React.FC<SingleElementRendererProps> = memo(({
   element,
   isSelected,
   isDraggable,
+  isSnapEnabled,
+  gridSize = 20,
   onSelect,
   onDragEnd,
   onTextDblClick,
@@ -56,6 +58,15 @@ const SingleElementRenderer: React.FC<SingleElementRendererProps> = memo(({
     rotation: element.rotation,
     onClick: () => onSelect(element.id),
     onTap: () => onSelect(element.id),
+    dragBoundFunc: (pos: { x: number; y: number }) => {
+      if (isSnapEnabled) {
+        return {
+          x: snapToGrid(pos.x, gridSize),
+          y: snapToGrid(pos.y, gridSize),
+        };
+      }
+      return pos;
+    },
     onDragEnd: (event: Konva.KonvaEventObject<DragEvent>) => {
       onDragEnd(element.id, event.target.x(), event.target.y());
     },
@@ -191,6 +202,8 @@ export const ElementRenderer: React.FC<ElementRendererProps> = ({
   previewElement,
   selectedIds,
   activeTool,
+  isSnapEnabled,
+  gridSize,
   onSelect,
   onDragEnd,
   onTextDblClick,
@@ -205,6 +218,8 @@ export const ElementRenderer: React.FC<ElementRendererProps> = ({
           element={element}
           isSelected={selectedIds.includes(element.id)}
           isDraggable={isDraggable}
+          isSnapEnabled={isSnapEnabled}
+          gridSize={gridSize}
           onSelect={onSelect}
           onDragEnd={onDragEnd}
           onTextDblClick={onTextDblClick}
@@ -217,6 +232,8 @@ export const ElementRenderer: React.FC<ElementRendererProps> = ({
           element={previewElement}
           isSelected={false}
           isDraggable={false}
+          isSnapEnabled={isSnapEnabled}
+          gridSize={gridSize}
           onSelect={() => {}}
           onDragEnd={() => {}}
           onTextDblClick={() => {}}
